@@ -1,6 +1,6 @@
 class Player extends Sprite {
-    constructor({ collisionBlocks = [], imageSrc, frameRate, animations }) {
-        super({ imageSrc, frameRate, animations })
+    constructor({ collisionBlocks = [], imageSrc, frameRate, animations, loop }) {
+        super({ imageSrc, frameRate, animations, loop })
         this.position = {
             x: 200,
             y: 200,
@@ -42,12 +42,30 @@ class Player extends Sprite {
         this.checkForVerticalCollisions()
     }
 
+    handleInput(keys) {
+        if (this.preventInput) return
+        this.velocity.x = 0
+        if (keys.d.pressed) {
+            this.switchSprite('runRight')
+            this.velocity.x = 5
+            this.lastDirection = 'right'
+        } else if (keys.a.pressed) {
+            this.switchSprite('runLeft')
+            this.velocity.x = -5
+            this.lastDirection = 'left'
+        } else {
+            if (this.lastDirection === 'left') this.switchSprite('idleLeft')
+            else this.switchSprite('idleRight')
+        }
+    }
+
     switchSprite(name) {
         if (this.image === this.animations[name].image) return
         this.currentFrame = 0
         this.image = this.animations[name].image
         this.frameRate = this.animations[name].frameRate
         this.frameBuffer = this.animations[name].frameBuffer
+        this.loop = this.animations[name].loop
     }
 
     updateHitbox() {
@@ -65,7 +83,7 @@ class Player extends Sprite {
         for (let i = 0; i < this.collisionBlocks.length; i++) {
             const collisionBlock = this.collisionBlocks[i]
 
-            // if a collision exists
+            // if collision
             if (
                 this.hitbox.position.x <=
                 collisionBlock.position.x + collisionBlock.width &&
@@ -76,7 +94,7 @@ class Player extends Sprite {
                 this.hitbox.position.y <=
                 collisionBlock.position.y + collisionBlock.height
             ) {
-                // collision on x axis going to the left
+                // collision left
                 if (this.velocity.x < -0) {
                     const offset = this.hitbox.position.x - this.position.x
                     this.position.x =
@@ -103,7 +121,7 @@ class Player extends Sprite {
         for (let i = 0; i < this.collisionBlocks.length; i++) {
             const collisionBlock = this.collisionBlocks[i]
 
-            // if a collision exists
+
             if (
                 this.hitbox.position.x <=
                 collisionBlock.position.x + collisionBlock.width &&
