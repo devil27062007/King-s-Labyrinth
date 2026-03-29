@@ -1,6 +1,6 @@
 class Sprite {
-    constructor ( { position , imageSrc , frameRate = 1 } ) {
-        this.position = position 
+    constructor({ position, imageSrc, frameRate = 1, animations }) {
+        this.position = position
         this.image = new Image()
         this.image.onload = () => {
             this.loaded = true
@@ -10,31 +10,40 @@ class Sprite {
         this.image.src = imageSrc
         this.loaded = false
         this.frameRate = frameRate
-        this.currentFrame = 0 
+        this.currentFrame = 0
         this.elapsedFrames = 0
         this.frameBuffer = 2
+        this.animations = animations
+
+        if (this.animations) {
+            for (let key in this.animations) {
+                const image = new Image()
+                image.src = this.animations[key].imageSrc
+                this.animations[key].image = image
+            }
+        }
     }
-    draw(){
-        if ( !this.loaded ) return
+    draw() {
+        if (!this.loaded) return
         const cropbox = {
-            position : {
-                x :this.width * this.currentFrame ,
-                y : 0 ,
-            } ,
-            width : this.width ,
-            height : this.height ,
+            position: {
+                x: this.width * this.currentFrame,
+                y: 0,
+            },
+            width: this.width,
+            height: this.height,
         }
 
         c.drawImage(
-            this.image , 
-            cropbox.position.x ,
-            cropbox.position.y ,
-            cropbox.width ,
-            cropbox.height ,
-            this.position.x , 
-            this.position.y ,
-            this.width ,
-            this.height 
+            this.image,
+            cropbox.position.x,
+            cropbox.position.y,
+            cropbox.width,
+            cropbox.height,
+            this.position.x,
+            this.position.y,
+            this.width,
+            this.height
         )
 
         this.updateFrames()
@@ -43,8 +52,8 @@ class Sprite {
     updateFrames() {
         this.elapsedFrames++
 
-        if ( this.elapsedFrames % this.frameBuffer === 0 ){
-            if ( this.currentFrame < this.frameRate - 1 ) this.currentFrame++
+        if (this.elapsedFrames % this.frameBuffer === 0) {
+            if (this.currentFrame < this.frameRate - 1) this.currentFrame++
             else this.currentFrame = 0
         }
     }
