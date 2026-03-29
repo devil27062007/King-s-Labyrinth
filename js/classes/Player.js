@@ -20,9 +20,9 @@ class Player extends Sprite {
     }
 
     update() {
-        // this is the blue box
-        // c.fillStyle = 'rgba(0, 0, 255, 0.5)'
-        // c.fillRect(this.position.x, this.position.y, this.width, this.height)
+        // 
+        // 
+        // 
 
         this.position.x += this.velocity.x
 
@@ -66,6 +66,7 @@ class Player extends Sprite {
         this.frameRate = this.animations[name].frameRate
         this.frameBuffer = this.animations[name].frameBuffer
         this.loop = this.animations[name].loop
+        this.currentAnimation = this.animations[name]
     }
 
     updateHitbox() {
