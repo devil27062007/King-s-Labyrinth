@@ -106,6 +106,10 @@ function drawWinScreen() {
         c.font = 'bold 58px Georgia'
         c.fillText('Victory!', baseWidth / 2, imageY + scaledImageHeight * 0.56)
     }
+    c.textAlign = 'center'
+    c.fillStyle = `rgba(168, 232, 255, ${promptBlink.toFixed(3)})`
+    c.fillText('Press R to return home' , baseWidth / 2 , baseHeight - 8)
+
 }
 
 function drawHomeScreen() {
@@ -200,7 +204,29 @@ function restartGame() {
     })
 }
 
+function goHomeFromVictory(){
+    window.gameState.won = false 
+    window.gameState.victoryTransitioning = false
+    window.gameState.started = true
+    window.gameState.homeTransitioning = false
+
+    overlay.opacity = 0
+    victoryOverlay.opacity = 1
+    homeOverlay.opacity = 1
+
+    level=1
+    levels[level].init()
+    player.switchSprite('idleRight')
+    player.preventInput = false
+    player.velocity.x = 0
+    player.velocity.y = 0
+    keys.a.pressed = false
+    keys.d.pressed = false
+    keys.w.pressed = false
+
+}
 window.restartGame = restartGame
+window.goHomeFromVictory = goHomeFromVictory
 
 let parsedCollisions
 let collisionBlocks

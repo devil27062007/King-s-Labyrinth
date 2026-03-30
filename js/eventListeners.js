@@ -3,6 +3,9 @@ window.addEventListener('keydown', (event) => {
     const key = event.key.toLowerCase()
 
     if (window.gameState?.won) {
+        if (key === 'r' && window.goHomeFromVictory) {
+            window.goHomeFromVictory()
+        }
         return
     }
 
