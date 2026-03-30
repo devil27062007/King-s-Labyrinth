@@ -2,6 +2,8 @@ window.addEventListener('keydown', (event) => {
     if (window.gameSound) gameSound.unlock()
     const key = event.key.toLowerCase()
 
+    if (!window.gameState?.assetsReady) return
+
     if (window.gameState?.won) {
         if (key === 'r' && window.goHomeFromVictory) {
             window.goHomeFromVictory()
@@ -58,6 +60,7 @@ window.addEventListener('keydown', (event) => {
 })
 
 window.addEventListener('keyup', (event) => {
+    if (!window.gameState?.assetsReady) return
     if (window.gameState?.won || !window.gameState?.started) return
 
     switch (event.key.toLowerCase()) {

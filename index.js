@@ -4,6 +4,7 @@ const c = canvas.getContext('2d')
 const baseWidth = 64 * 16
 const baseHeight = 64 * 9
 window.gameState = {
+    assetsReady: false,
     started: false,
     homeTransitioning: false,
     victoryTransitioning: false,
@@ -70,6 +71,7 @@ function drawRoundedRect(x, y, width, height, radius) {
     c.closePath()
 }
 
+
 function drawWinScreen() {
     const t = performance.now() / 1000
     const waveY = Math.sin(t * 2.1) * 3
@@ -107,7 +109,9 @@ function drawWinScreen() {
         c.fillText('Victory!', baseWidth / 2, imageY + scaledImageHeight * 0.56)
     }
     c.textAlign = 'center'
+    const promptBlink = 0.35 + (Math.sin(t * 3.4) + 1) * 0.3
     c.fillStyle = `rgba(168, 232, 255, ${promptBlink.toFixed(3)})`
+    c.font = '18px Georgia'
     c.fillText('Press R to return home' , baseWidth / 2 , baseHeight - 8)
 
 }
@@ -394,15 +398,9 @@ let levels = {
 }
 
 const keys = {
-    w: {
-        pressed: false,
-    },
-    a: {
-        pressed: false,
-    },
-    d: {
-        pressed: false,
-    },
+    w: { pressed: false , },
+    a: { pressed: false , },
+    d: { pressed: false , },
 }
 
 const overlay = {
@@ -440,31 +438,44 @@ window.startGameFromHome = startGameFromHome
 function animate() {
     window.requestAnimationFrame(animate)
 
+    if (!window.gameState.assetsReady) {
+        updateBodyFadeBackground(0)
+        if (window.gameAssetLoader) {
+            window.gameAssetLoader.drawLoadingScreen(c, baseWidth, baseHeight)
+        }
+        return
+    }
+
     background.draw()
 
     doors.forEach((door) => {
         door.draw()
     })
 
-    if (!window.gameState.started && !window.gameState.homeTransitioning) {
+    if (!window.gameState.started && !window.gameState.homeTransitioning)
+    {
         updateBodyFadeBackground(0)
         drawHomeScreen()
         return
     }
 
-    if (!window.gameState.won) {
+    if (!window.gameState.won)
+    {
         player.handleInput(keys)
         player.update()
         player.draw()
     }
 
-    if (window.gameState.won) {
+    if (window.gameState.won)
+    {
         updateBodyFadeBackground(0)
         c.save()
         c.globalAlpha = window.gameState.victoryTransitioning ? victoryOverlay.opacity : 1
         drawWinScreen()
         c.restore()
-    } else {
+    }
+    else
+    {
         updateBodyFadeBackground(overlay.opacity)
 
         c.save()
@@ -473,7 +484,7 @@ function animate() {
         c.fillRect(0, 0, baseWidth, baseHeight)
         c.restore()
     }
-    if (window.gameState.homeTransitioning) {
+    if ( window.gameState.homeTransitioning ) {
         c.save()
         c.globalAlpha = homeOverlay.opacity
         drawHomeScreen()
@@ -482,6 +493,9 @@ function animate() {
 
 }
 
+window.gameAssetLoader.preloadAllAssets().then( () => {
+    levels[level].init()
+    window.gameState.assetsReady = true
+})
 
-levels[level].init()
 animate()

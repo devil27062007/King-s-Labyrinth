@@ -14,46 +14,38 @@ class Player extends Sprite {
         this.sides = {
             bottom: this.position.y + this.height,
         }
-        this.gravity = 1
 
+        this.gravity = 1
         this.collisionBlocks = collisionBlocks
     }
 
     update() {
-        // 
-        // 
-        // 
-
         this.position.x += this.velocity.x
-
         this.updateHitbox()
-
         this.checkForHorizontalCollisions()
         this.applyGravity()
-
         this.updateHitbox()
-
-        // c.fillRect(
-        //   this.hitbox.position.x,
-        //   this.hitbox.position.y,
-        //   this.hitbox.width,
-        //   this.hitbox.height
-        // )
         this.checkForVerticalCollisions()
     }
 
     handleInput(keys) {
         if (this.preventInput) return
         this.velocity.x = 0
-        if (keys.d.pressed) {
+
+        if (keys.d.pressed) 
+        {
             this.switchSprite('runRight')
             this.velocity.x = 5
             this.lastDirection = 'right'
-        } else if (keys.a.pressed) {
+        } 
+        else if (keys.a.pressed) 
+        {
             this.switchSprite('runLeft')
             this.velocity.x = -5
             this.lastDirection = 'left'
-        } else {
+        } 
+        else
+        {
             if (this.lastDirection === 'left') this.switchSprite('idleLeft')
             else this.switchSprite('idleRight')
         }
