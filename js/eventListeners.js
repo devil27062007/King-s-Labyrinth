@@ -1,15 +1,25 @@
 window.addEventListener('keydown', (event) => {
     if (window.gameSound) gameSound.unlock()
+    const key = event.key.toLowerCase()
 
     if (window.gameState?.won) {
-        if (event.key === 'r' || event.key === 'R' || event.key === 'Enter') {
-            window.restartGame()
-        }
         return
     }
 
+    if (!window.gameState?.started) {
+        if (key === 'a' || key === 'd' || key === 'w') {
+            if (window.startGameFromHome) {
+                window.startGameFromHome()
+            } else {
+                window.gameState.started = true
+            }
+        } else {
+            return
+        }
+    }
+
     if (player.preventInput) return
-    switch (event.key) {
+    switch (key) {
         case 'w':
             for (let i = 0; i < doors.length; i++) {
                 const door = doors[i]
@@ -45,9 +55,9 @@ window.addEventListener('keydown', (event) => {
 })
 
 window.addEventListener('keyup', (event) => {
-    if (window.gameState?.won) return
+    if (window.gameState?.won || !window.gameState?.started) return
 
-    switch (event.key) {
+    switch (event.key.toLowerCase()) {
         case 'a':
             //move left
             keys.a.pressed = false
@@ -60,3 +70,4 @@ window.addEventListener('keyup', (event) => {
             break
     }
 })
+
